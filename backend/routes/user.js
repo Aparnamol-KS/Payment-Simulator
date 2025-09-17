@@ -1,0 +1,98 @@
+const express = require('express');
+const { signupBody, signinBody, updateBody } = require('../types.js');
+const cors = require('cors');
+const { User } = require("../db.js");
+const jwt = require('jsonwebtoken')
+const { JWT_SECRET } = require('../config.js');
+const { authMiddleware } = require('../middleware.js');
+const router = express.Router();
+
+module.exports = router;
+
+const app = express();
+app.use(express.json());
+app.use(cors())
+
+router.post('/signup', async (req, res) => {
+    const response = signupBody.safeParse(req.body);
+    if (!response.success) {
+        console.log("Validation error:", response.error.issues);
+        return res.status(411).json({
+            message: "Email already taken / Incorrect Inputs",
+            errors: response.error.issues
+        })
+    }
+
+    const existingUser = await User.findOne({
+        username: req.body.username
+    })
+
+    if (existingUser) {
+        return res.status(411).json({
+            message: "Email already taken o/Incorrect Inputs"
+        })
+    }
+
+    const user = await User.create({
+        username: req.body.username,
+        password: req.body.password,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName
+    })
+
+    const userId = user._id;
+
+    const token = jwt.sign({
+        userId
+    }, JWT_SECRET);
+
+    res.json({
+        message: "User created successfully",
+        token: token
+    })
+})
+
+router.post('/signin', async (req, res) => {
+    const { success } = signinBody.safeParse(req.body);
+    if (!success) {
+        return res.status(411).json({
+            message: "incorrect inputs"
+        })
+    }
+
+    const user = await User.findOne({
+        username: req.body.username,
+        password: req.body.password
+    });
+
+    if (user) {
+        const token = jwt.sign({
+            userId: user._id
+        }, JWT_SECRET);
+
+        res.json({
+            token: token
+        })
+        return;
+    }
+
+    res.status(411).json({
+        message: "Error while logging in "
+    })
+})
+
+
+router.put("/", authMiddleware, async (req, res) => {
+    const { success } = updateBody.safeParse(req.body)
+    if (!success) {
+        res.status(411).json({
+            message: "Error while updating information"
+        })
+    }
+
+		await User.updateOne({ _id: req.userId }, req.body);
+	
+    res.json({
+        message: "Updated successfully"
+    })
+})
