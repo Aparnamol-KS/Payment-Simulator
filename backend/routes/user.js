@@ -7,7 +7,7 @@ const { JWT_SECRET } = require('../config.js');
 const { authMiddleware } = require('../middleware.js');
 const router = express.Router();
 
-module.exports = router;
+
 
 const app = express();
 app.use(express.json());
@@ -29,7 +29,7 @@ router.post('/signup', async (req, res) => {
 
     if (existingUser) {
         return res.status(411).json({
-            message: "Email already taken o/Incorrect Inputs"
+            message: "Email already taken Incorrect Inputs"
         })
     }
 
@@ -44,7 +44,7 @@ router.post('/signup', async (req, res) => {
 
     const token = jwt.sign({
         userId
-    }, JWT_SECRET);
+    }, process.env.JWT_SECRET);
 
     res.json({
         message: "User created successfully",
@@ -68,7 +68,7 @@ router.post('/signin', async (req, res) => {
     if (user) {
         const token = jwt.sign({
             userId: user._id
-        }, JWT_SECRET);
+        }, process.env.JWT_SECRET);
 
         res.json({
             token: token
@@ -96,3 +96,6 @@ router.put("/", authMiddleware, async (req, res) => {
         message: "Updated successfully"
     })
 })
+
+
+module.exports = router;
