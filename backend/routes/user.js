@@ -1,7 +1,7 @@
 const express = require('express');
 const { signupBody, signinBody, updateBody } = require('../types.js');
 const cors = require('cors');
-const { User } = require("../db.js");
+const { User, Account } = require("../db.js");
 const jwt = require('jsonwebtoken')
 const { JWT_SECRET } = require('../config.js');
 const { authMiddleware } = require('../middleware.js');
@@ -42,6 +42,10 @@ router.post('/signup', async (req, res) => {
 
     const userId = user._id;
 
+    await Account.create({
+        userId,
+        balance:1+Math.random()*10000
+    })
     const token = jwt.sign({
         userId
     }, process.env.JWT_SECRET);
@@ -90,12 +94,36 @@ router.put("/", authMiddleware, async (req, res) => {
         })
     }
 
-		await User.updateOne({ _id: req.userId }, req.body);
-	
+    await User.updateOne({ _id: req.userId }, req.body);
+
     res.json({
         message: "Updated successfully"
     })
 })
 
+router.get('/bulk', async (req, res) => {
+    const filter = req.query.filter || "";
+
+    const users = await User.find({
+        $or: [{
+            firstName: {
+                "$regex": filter
+            }
+        }, {
+            lastName: {
+                "$regex": filter
+            }
+        }]
+    })
+
+    res.json({
+        user: users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
+    })
+})
 
 module.exports = router;
