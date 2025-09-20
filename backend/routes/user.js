@@ -3,7 +3,6 @@ const { signupBody, signinBody, updateBody } = require('../types.js');
 const cors = require('cors');
 const { User, Account } = require("../db.js");
 const jwt = require('jsonwebtoken')
-const { JWT_SECRET } = require('../config.js');
 const { authMiddleware } = require('../middleware.js');
 const router = express.Router();
 

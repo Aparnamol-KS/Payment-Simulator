@@ -47,7 +47,7 @@ const accountSchema = new mongoose.Schema({
 
 
 const User = mongoose.model('users', UserSchema);
-const Account = mongoose.model('Account',accountSchema);
+const Account = mongoose.model('accounts',accountSchema);
 
 
 
