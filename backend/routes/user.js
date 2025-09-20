@@ -15,9 +15,8 @@ app.use(cors())
 router.post('/signup', async (req, res) => {
     const response = signupBody.safeParse(req.body);
     if (!response.success) {
-        console.log("Validation error:", response.error.issues);
         return res.status(411).json({
-            message: "Email already taken / Incorrect Inputs",
+            message: "Incorrect Inputs",
             errors: response.error.issues
         })
     }
@@ -43,7 +42,7 @@ router.post('/signup', async (req, res) => {
 
     await Account.create({
         userId,
-        balance:1+Math.random()*10000
+        balance: 1 + Math.random() * 10000
     })
     const token = jwt.sign({
         userId
@@ -100,20 +99,22 @@ router.put("/", authMiddleware, async (req, res) => {
     })
 })
 
-router.get('/bulk', async (req, res) => {
+router.get('/bulk', authMiddleware, async (req, res) => {
+    const currentUserId = req.userId;
     const filter = req.query.filter || "";
 
-    const users = await User.find({
-        $or: [{
-            firstName: {
-                "$regex": filter
-            }
-        }, {
-            lastName: {
-                "$regex": filter
-            }
-        }]
-    })
+    // Build the query object
+    let query = { _id: { $ne: currentUserId } }; // always exclude current user
+
+    if (filter) {
+        // add $or filter only if filter is provided
+        query.$or = [
+            { firstName: { $regex: filter, $options: "i" } },
+            { lastName: { $regex: filter, $options: "i" } }
+        ];
+    }
+
+    const users = await User.find(query);
 
     res.json({
         user: users.map(user => ({
@@ -122,7 +123,7 @@ router.get('/bulk', async (req, res) => {
             lastName: user.lastName,
             _id: user._id
         }))
-    })
-})
+    });
+});
 
 module.exports = router;
