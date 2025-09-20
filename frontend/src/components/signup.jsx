@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { BottomWarning } from "./warning";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -40,17 +41,17 @@ function SignUp() {
   }
 
   return (
-    <div className="flex items-center font-[Montserrat] justify-center min-h-screen bg-gray-100 px-4">
+    <div className="flex items-center font-[Montserrat]  text-white justify-center min-h-screen bg-gray-950 px-4">
       <form
         onSubmit={addUser}
-        className="bg-white shadow-md rounded-2xl p-8 w-full max-w-md"
+        className="bg-gray-900 shadow-lg rounded-2xl p-8 w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+        <h2 className="text-4xl font-bold mb-6 text-center font-[Merriweather] text-blue-400">
           Create an Account
         </h2>
 
         <div className="mb-4">
-          <label htmlFor="username" className="block text-gray-700 text-sm mb-1">
+          <label htmlFor="username" className="block text-sm mb-1">
             Username
           </label>
           <input
@@ -58,14 +59,14 @@ function SignUp() {
             type="text"
             value={formData.username}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring focus:ring-blue-400"
             placeholder="Enter your username"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label htmlFor="firstName" className="block text-gray-700 text-sm mb-1">
+          <label htmlFor="firstName" className="block  text-sm mb-1">
             First Name
           </label>
           <input
@@ -73,14 +74,14 @@ function SignUp() {
             type="text"
             value={formData.firstName}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring focus:ring-blue-400"
             placeholder="Enter your first name"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label htmlFor="lastName" className="block text-gray-700 text-sm mb-1">
+          <label htmlFor="lastName" className="block text-sm mb-1">
             Last Name
           </label>
           <input
@@ -88,14 +89,14 @@ function SignUp() {
             type="text"
             value={formData.lastName}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring focus:ring-blue-400"
             placeholder="Enter your last name"
             required
           />
         </div>
 
         <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 text-sm mb-1">
+          <label htmlFor="password" className="block  text-sm mb-1">
             Password
           </label>
           <input
@@ -103,7 +104,7 @@ function SignUp() {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+            className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800  placeholder-gray-400 focus:outline-none focus:ring focus:ring-blue-400"
             placeholder="Enter your password"
             required
           />
@@ -116,6 +117,12 @@ function SignUp() {
         >
           {loading ? "Signing up..." : "Sign Up"}
         </button>
+
+        <BottomWarning
+          label={"Already have an account?"}
+          buttonText={"Sign in"}
+          to={"/signin"}
+        />
       </form>
     </div>
   );

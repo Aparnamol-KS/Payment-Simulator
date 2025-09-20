@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { BottomWarning } from "./warning";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -26,12 +27,9 @@ function SignIn() {
     setLoading(true);
 
     axios
-      .post("http://localhost:3000/api/v1/user/signin", {
-        username: form.username,
-        password: form.password,
-      })
+      .post("http://localhost:3000/api/v1/user/signin", form)
       .then((response) => {
-        const token = response.data.token; // ✅ properly declared
+        const token = response.data.token;
         localStorage.setItem("token", `Bearer ${token}`);
         navigate("/dashboard");
       })
@@ -44,48 +42,60 @@ function SignIn() {
   }
 
   return (
-    <div className="flex items-center font-[Montserrat] justify-center min-h-screen bg-gray-900">
+    <div className="flex items-center justify-center  text-white min-h-screen bg-gray-950 px-4 font-[Montserrat]">
       <form
         onSubmit={signIn}
-        className="bg-gray-800 shadow-lg rounded-2xl p-8 w-96 text-gray-100"
+        className="bg-gray-900 shadow-lg rounded-2xl p-8 w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-400">
+        <h2 className="text-4xl font-bold mb-6  font-[Merriweather] text-center text-blue-400">
           Sign In
         </h2>
 
         <div className="mb-4">
-          <label className="block text-sm mb-1">Username</label>
+          <label htmlFor="username" className="block  text-sm mb-1">
+            Username
+          </label>
           <input
+            id="username"
             name="username"
             type="text"
             value={form.username}
             onChange={handleChange}
-            className="w-full border border-gray-600 rounded-lg px-3 py-2 bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your username"
             required
+            className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800  placeholder-gray-400 focus:outline-none focus:ring focus:ring-blue-400"
           />
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm mb-1">Password</label>
+          <label htmlFor="password" className="block text-sm mb-1">
+            Password
+          </label>
           <input
+            id="password"
             name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
-            className="w-full border border-gray-600 rounded-lg px-3 py-2 bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password"
             required
+            className="w-full border border-gray-700 rounded-lg px-3 py-2 bg-gray-800 placeholder-gray-400 focus:outline-none focus:ring focus:ring-blue-400"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition"
         >
-          {loading ? "Signing In..." : "Sign In"}
+          {loading ? "Signing in..." : "Sign In"}
         </button>
+
+        <BottomWarning
+          label={"Don't have an account?"}
+          buttonText={"Sign up"}
+          to={"/signup"}
+        />
       </form>
     </div>
   );

@@ -42,7 +42,7 @@ export const Users = () => {
                     placeholder="Search users..."
                     value={search}
                     onChange={handleChange}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()} // search on Enter
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()} 
                     className="flex-1 px-3 py-2 border rounded-l bg-gray-800 text-gray-200 border-gray-600 "
                 />
 
